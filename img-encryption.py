@@ -2,6 +2,7 @@ from PIL import Image
 import numpy as np
 import os
 import json
+import pyfiglet  
 
 class AdvancedImageEncryptor:
     def __init__(self, key: str):
@@ -36,7 +37,7 @@ class AdvancedImageEncryptor:
         :param encrypted_array: Encrypted pixel array.
         :return: Decrypted pixel array.
         """
-        return self._xor_encrypt(encrypted_array)  
+        return self._xor_encrypt(encrypted_array)
 
     def encrypt(self, input_path: str, output_path: str):
         """
@@ -59,6 +60,7 @@ class AdvancedImageEncryptor:
         with open(output_path + ".meta", "w") as meta_file:
             json.dump(metadata, meta_file)
 
+        print(pyfiglet.figlet_format("Image Encryption"))
         print(f"Image encrypted and saved to {output_path}.")
 
     def decrypt(self, input_path: str, output_path: str):
@@ -70,23 +72,21 @@ class AdvancedImageEncryptor:
         if not os.path.exists(input_path):
             raise FileNotFoundError(f"Input file '{input_path}' not found.")
 
-    
         metadata_path = input_path + ".meta"
         if not os.path.exists(metadata_path):
             raise FileNotFoundError(f"Metadata file '{metadata_path}' not found.")
         with open(metadata_path, "r") as meta_file:
             metadata = json.load(meta_file)
 
-    
         image = Image.open(input_path)
         encrypted_array = np.array(image)
 
-        
         decrypted_array = self._xor_decrypt(encrypted_array)
 
-    
         decrypted_image = Image.fromarray(np.uint8(decrypted_array))
         decrypted_image.save(output_path)
+        
+        print(pyfiglet.figlet_format("Image Decryption"))
         print(f"Image decrypted and saved to {output_path}.")
 
 
